@@ -9,6 +9,7 @@ import (
 	"github.com/gocolly/colly"
 )
 
+// buat struct untuk menampung elemen yang ingin diambil
 type Item struct {
 	Link    string `json:"link"`
 	Name    string `json:"name"`
@@ -30,10 +31,14 @@ func main() {
 
 	items := []Item{}
 
+	// baris untuk mengambil dan menentukan elemen mana yang akan dipakai
 	c.OnHTML("li.next a", func(h *colly.HTMLElement) {
+
+		// baris yang akan mengatur apa yang akan dilakukan jika menemukan elemen css yang sudah diatur sebelumnya
 		c.Visit(h.Request.AbsoluteURL(h.Attr("href")))
 	})
 
+	// baris untuk mengambil dan menentukan elemen mana yang akan dipakai
 	c.OnHTML("article.product_pod", func(h *colly.HTMLElement) {
 		i := Item{
 			Link:    h.ChildAttr("a", "href"),
@@ -44,6 +49,7 @@ func main() {
 		items = append(items, i)
 	})
 
+	// baris untuk dapat mengambil semua data yang berada di page lain dengan cara request ke page nya
 	c.OnRequest(func(r *colly.Request) {
 		fmt.Println("visiting", r.URL)
 	})
